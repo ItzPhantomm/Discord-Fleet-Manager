@@ -16,8 +16,14 @@
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
-      "@discord-fleet-manager/shared/*": ["../shared/src/*"]
-    }
+      "@discord-fleet-manager/shared/*": ["../shared/dist/*"]
+    },
+    "typeRoots": ["./types", "./node_modules/@types"],
+    "allowSyntheticDefaultImports": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]

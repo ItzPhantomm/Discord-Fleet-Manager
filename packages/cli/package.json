@@ -15,8 +15,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@discord-fleet-manager/sdk": "workspace:*",
-    "@discord-fleet-manager/shared": "workspace:*",
+    "@discord-fleet-manager/sdk": "file:../sdk",
+    "@discord-fleet-manager/shared": "file:../shared",
     "commander": "^11.1.0",
     "inquirer": "^9.2.12",
     "ora": "^7.0.1",

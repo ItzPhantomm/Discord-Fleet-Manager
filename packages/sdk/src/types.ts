@@ -7,6 +7,23 @@ export interface FleetClientConfig {
   reconnectInterval?: number;
 }
 
+export interface FleetClient {
+  connect(): Promise<void>;
+  disconnect(): void;
+  on(event: 'connected', listener: () => void): this;
+  on(event: 'disconnected', listener: () => void): this;
+  on(event: 'error', listener: (error: Error) => void): this;
+  on(event: 'bot_status', listener: (data: { botId: number; status: string; pid?: number; uptime?: number }) => void): this;
+  on(event: 'bot_log', listener: (data: { botId: number; log: string }) => void): this;
+  on(event: 'monitor_message', listener: (data: { sessionId: number; message: Message }) => void): this;
+  on(event: 'monitor_stats', listener: (data: { sessionId: number; messageCount: number; editCount: number; deleteCount: number }) => void): this;
+  on(event: 'fleet_health', listener: (data: FleetHealth) => void): this;
+  on(event: 'intelligence_update', listener: (data: { graph: FleetGraph; health: FleetHealth }) => void): this;
+  on(event: 'event', listener: (event: FleetEvent) => void): this;
+  on(event: string, listener: (...args: any[]) => void): this;
+  off(event: string, listener: (...args: any[]) => void): this;
+}
+
 export interface Bot {
   id: number;
   name: string;

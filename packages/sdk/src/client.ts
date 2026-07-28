@@ -3,6 +3,7 @@ import WebSocket from 'ws';
 import type {
   FleetClientConfig,
   Bot,
+  BotFeature,
   Guild,
   MonitorSession,
   Message,
@@ -93,11 +94,11 @@ export class FleetClient extends EventEmitter {
         }
       });
 
-      this.ws.on('error', (error) => {
-        console.error('[FleetClient] WebSocket error:', error);
-        this.emit('error', error);
+      this.ws.on('error', (err: Error) => {
+        console.error('[FleetClient] WebSocket error:', err);
+        this.emit('error', err);
         if (this.ws?.readyState === WebSocket.CONNECTING) {
-          reject(error);
+          reject(err);
         }
       });
     });
@@ -175,8 +176,8 @@ export class FleetClient extends EventEmitter {
     });
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({ message: response.statusText }));
-      throw new Error(`API Error: ${error.message || response.statusText}`);
+      const err = await response.json().catch(() => ({ message: response.statusText })) as { message?: string };
+      throw new Error(`API Error: ${err.message || response.statusText}`);
     }
 
     return response.json();

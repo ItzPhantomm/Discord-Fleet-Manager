@@ -12,8 +12,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@discord-fleet-manager/shared": "workspace:*",
-    "@discord-fleet-manager/sdk": "workspace:*",
+    "@discord-fleet-manager/shared": "file:../shared",
+    "@discord-fleet-manager/sdk": "file:../sdk",
     "better-sqlite3": "^9.2.2",
     "cytoscape": "^3.28.1",
     "zod": "^3.22.4"

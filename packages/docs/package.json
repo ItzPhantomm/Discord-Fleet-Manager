@@ -1,0 +1,15 @@
+{
+  "name": "@discord-fleet-manager/docs",
+  "version": "0.0.1",
+  "description": "Documentation site for Discord Fleet Manager",
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev src",
+    "build": "vitepress build src",
+    "preview": "vitepress preview src"
+  },
+  "devDependencies": {
+    "vitepress": "^1.0.0-rc.0",
+    "vue": "^3.4.0"
+  }
+}
