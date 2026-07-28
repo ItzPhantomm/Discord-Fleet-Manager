@@ -1,0 +1,49 @@
+{
+  "name": "discord-fleet-manager",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Intelligent Discord bot fleet manager — multi-bot dashboard, real-time message intelligence, smart token/status engines, fleet portability",
+  "author": "Phantom",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm:dev:manager\" \"npm:dev:dashboard\"",
+    "dev:manager": "npm run dev --workspace=packages/manager",
+    "dev:dashboard": "npm run dev --workspace=packages/dashboard",
+    "build": "npm run build --workspaces",
+    "build:manager": "npm run build --workspace=packages/manager",
+    "build:dashboard": "npm run build --workspace=packages/dashboard",
+    "build:cli": "npm run build --workspace=packages/cli",
+    "build:sdk": "npm run build --workspace=packages/sdk",
+    "lint": "npm run lint --workspaces",
+    "typecheck": "npm run typecheck --workspaces",
+    "test": "npm run test --workspaces",
+    "test:unit": "npm run test:unit --workspaces",
+    "test:integration": "npm run test:integration --workspaces",
+    "db:init": "npm run db:init --workspace=packages/manager",
+    "db:migrate": "npm run db:migrate --workspace=packages/manager",
+    "cli": "npm run start --workspace=packages/cli",
+    "docker:build": "docker build -t discord-fleet-manager .",
+    "docker:run": "docker run -p 3000:3000 -v $(pwd)/data:/data discord-fleet-manager",
+    "prepare": "husky install",
+    "release": "semantic-release",
+    "docs:dev": "npm run docs:dev --workspace=packages/docs",
+    "docs:build": "npm run docs:build --workspace=packages/docs"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "concurrently": "^8.2.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.1.0",
+    "prettier": "^3.1.0",
+    "semantic-release": "^22.0.12",
+    "typescript": "^5.3.2",
+    "vitest": "^1.0.4"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "npm@10.2.0"
+}

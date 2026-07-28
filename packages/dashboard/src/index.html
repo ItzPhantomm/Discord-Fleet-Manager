@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phantom Fleet Manager v2.0 — Discord Bot Control Center</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+          </svg>
+          <span>Phantom Fleet</span>
+        </div>
+        <div class="version-badge">v2.0</div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">FLEET</div>
+        <button class="nav-item active" data-view="fleet">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+          <span>Bot Fleet</span>
+          <span class="nav-badge" id="fleet-count">0</span>
+        </button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">MONITORING</div>
+        <button class="nav-item" data-view="message-logger">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span>Message Logger</span>
+          <span class="nav-badge nav-badge-live" id="monitor-count">0</span>
+        </button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">TOOLS</div>
+        <button class="nav-item" onclick="exportFleet()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Export Fleet</span>
+        </button>
+        <button class="nav-item" onclick="importFleet()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span>Import Fleet</span>
+        </button>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">SYSTEM</div>
+        <button class="nav-item" data-view="settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Settings</span>
+        </button>
+      </div>
+      <div class="sidebar-footer">
+        <div class="phantom-brand">
+          <span class="phantom-logo">👻</span>
+          <span>Made by Phantom</span>
+        </div>
+        <div class="ws-status" id="ws-status">
+          <span class="ws-dot"></span>
+          <span>Connecting...</span>
+        </div>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <!-- Fleet View -->
+      <div class="view active" id="view-fleet">
+        <header class="page-header">
+          <div class="header-left">
+            <h1>Bot Fleet</h1>
+            <p class="header-sub">Manage and monitor your Discord bot army</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-ghost" onclick="importFleet()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Import
+            </button>
+            <button class="btn btn-primary" onclick="showAddBotModal()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Bot
+            </button>
+          </div>
+        </header>
+        <div class="stats-bar">
+          <div class="stat-card"><div class="stat-value" id="stat-total-bots">0</div><div class="stat-label">Total Bots</div></div>
+          <div class="stat-card"><div class="stat-value" id="stat-online">0</div><div class="stat-label">Online</div></div>
+          <div class="stat-card"><div class="stat-value" id="stat-guilds">0</div><div class="stat-label">Total Guilds</div></div>
+          <div class="stat-card"><div class="stat-value" id="stat-monitors">0</div><div class="stat-label">Active Monitors</div></div>
+        </div>
+        <div class="bots-grid" id="bots-grid"></div>
+      </div>
+
+      <!-- Bot Panel -->
+      <div class="view" id="view-bot-panel">
+        <header class="page-header">
+          <button class="btn btn-ghost" onclick="showView('fleet')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+            Back
+          </button>
+          <div class="header-center" id="bot-panel-header">
+            <h1>Bot Name</h1>
+            <span class="status-badge" id="bot-panel-status">Offline</span>
+          </div>
+          <div class="header-actions" id="bot-panel-actions">
+            <button class="btn btn-success" onclick="startBot()">Start</button>
+            <button class="btn btn-danger" onclick="stopBot()">Stop</button>
+            <button class="btn btn-ghost" onclick="restartBot()">Restart</button>
+          </div>
+        </header>
+        <div class="tabs">
+          <button class="tab active" data-tab="overview">Overview</button>
+          <button class="tab" data-tab="features">Features</button>
+          <button class="tab" data-tab="logs">Logs</button>
+          <button class="tab" data-tab="config">Config</button>
+        </div>
+        <div class="tab-content active" id="tab-overview">
+          <div class="overview-grid">
+            <div class="info-card">
+              <div class="info-card-header">
+                <img id="bot-avatar" src="" alt="" class="bot-avatar-large">
+                <div class="info-card-title">
+                  <h3 id="bot-name-detail">Bot Name</h3>
+                  <span id="bot-client-id">ID: ...</span>
+                </div>
+              </div>
+              <div class="info-stats">
+                <div class="info-stat"><span class="info-stat-label">Status</span><span class="info-stat-value" id="bot-status-detail">Offline</span></div>
+                <div class="info-stat"><span class="info-stat-label">Uptime</span><span class="info-stat-value" id="bot-uptime">0s</span></div>
+                <div class="info-stat"><span class="info-stat-label">PID</span><span class="info-stat-value" id="bot-pid">—</span></div>
+              </div>
+            </div>
+            <div class="info-card">
+              <h4>Resource Usage</h4>
+              <div class="resource-bars">
+                <div class="resource-bar"><span>CPU</span><div class="bar"><div class="bar-fill" style="width:0%"></div></div><span>0%</span></div>
+                <div class="resource-bar"><span>Memory</span><div class="bar"><div class="bar-fill" style="width:0%"></div></div><span>0 MB</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-content" id="tab-features">
+          <div class="features-grid" id="features-grid"></div>
+        </div>
+        <div class="tab-content" id="tab-logs">
+          <div class="logs-container">
+            <div class="logs-header"><span class="logs-title">Real-time Logs</span><button class="btn btn-sm btn-ghost" onclick="refreshLogs()">Refresh</button></div>
+            <div class="logs-scroll" id="logs-scroll"><div class="logs-empty">Start the bot to see logs...</div></div>
+          </div>
+        </div>
+        <div class="tab-content" id="tab-config">
+          <div class="config-panel"><h3>Bot Configuration</h3><p class="text-muted">Edit bot settings and environment variables.</p></div>
+        </div>
+      </div>
+
+      <!-- Message Logger -->
+      <div class="view" id="view-message-logger">
+        <header class="page-header">
+          <div class="header-left"><h1>Message Logger</h1><p class="header-sub">Monitor messages across servers in real-time</p></div>
+          <div class="header-actions" id="logger-actions">
+            <span class="status-indicator" id="logger-status"><span class="status-dot"></span><span>Inactive</span></span>
+          </div>
+        </header>
+
+        <div class="logger-step" id="step-input">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h3>Enter Server ID</h3>
+              <p class="text-muted">Input the Discord server ID you want to monitor</p>
+              <div class="input-group">
+                <input type="text" id="guild-id-input" placeholder="1234567890123456789" maxlength="25">
+                <button class="btn btn-primary" onclick="scanGuild()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                  Scan Server
+                </button>
+              </div>
+              <p class="input-hint">Right-click any server → Copy Server ID (Developer Mode required)</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="logger-step hidden" id="step-detection">
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h3>Bot Detection</h3>
+              <p class="text-muted" id="detection-subtitle">Scanning for fleet bots...</p>
+              <div id="detection-loading" class="loading-spinner"><div class="spinner"></div><span>Checking all registered bots...</span></div>
+              <div id="detection-error" class="alert alert-error hidden">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                <span id="error-text">No bots found.</span>
+              </div>
+              <div id="detection-results" class="detection-results hidden">
+                <div class="results-header"><span id="results-count">Found 0 bots</span><span class="guild-name" id="results-guild-name"></span></div>
+                <div id="bot-selection-list" class="bot-selection-list"></div>
+                <div class="selection-actions">
+                  <button class="btn btn-ghost" onclick="resetLogger()">Cancel</button>
+                  <button class="btn btn-primary" id="confirm-monitor-btn" onclick="confirmMonitor()" disabled>Start Monitoring</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="logger-step hidden" id="step-stream">
+          <div class="stream-layout">
+            <div class="channel-sidebar" id="channel-sidebar">
+              <div class="channel-header">Channels</div>
+              <div class="channel-list" id="channel-list">
+                <!-- Channels populated here -->
+              </div>
+              <div class="channel-hint">↑↓ to navigate<br>Enter to focus</div>
+            </div>
+            <div class="stream-main">
+              <div class="stream-header">
+                <div class="stream-info">
+                  <img id="stream-guild-icon" src="" alt="" class="stream-guild-icon">
+                  <div>
+                    <h3 id="stream-guild-name">Server Name</h3>
+                    <span class="stream-meta">Monitoring via <span id="stream-bot-name">Bot Name</span></span>
+                  </div>
+                </div>
+                <div class="stream-controls">
+                  <div class="filter-group">
+                    <select id="channel-filter" onchange="filterMessages()"><option value="">All Channels</option></select>
+                    <select id="type-filter" onchange="filterMessages()">
+                      <option value="">All Types</option>
+                      <option value="default">Normal</option>
+                      <option value="edit">Edited</option>
+                      <option value="delete">Deleted</option>
+                    </select>
+                  </div>
+                  <button class="btn btn-danger btn-sm" onclick="stopMonitoring()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6v6H9z"/></svg>
+                    Stop
+                  </button>
+                </div>
+              </div>
+              <div class="stream-stats" id="stream-stats">
+                <div class="stream-stat"><span class="stream-stat-value" id="stat-messages">0</span><span class="stream-stat-label">Messages</span></div>
+                <div class="stream-stat"><span class="stream-stat-value" id="stat-edits">0</span><span class="stream-stat-label">Edited</span></div>
+                <div class="stream-stat"><span class="stream-stat-value" id="stat-deletes">0</span><span class="stream-stat-label">Deleted</span></div>
+                <div class="stream-stat"><span class="stream-stat-value" id="stat-uptime">0s</span><span class="stream-stat-label">Uptime</span></div>
+              </div>
+              <div class="messages-container" id="messages-container">
+                <div class="messages-empty"><div class="pulse-dot"></div><span>Waiting for messages...</span></div>
+              </div>
+              <div class="messages-footer">
+                <button class="btn btn-ghost btn-sm" onclick="loadMoreMessages()">Load More</button>
+                <span class="messages-count" id="messages-showing">Showing 0 messages</span>
+              </div>
+              <div class="message-input-bar">
+                <input type="text" id="msg-input" placeholder="Type a message and press Enter to send..." onkeydown="if(event.key==='Enter')sendMessage()">
+                <button class="btn btn-primary" onclick="sendMessage()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div class="view" id="view-settings">
+        <header class="page-header">
+          <div class="header-left"><h1>Settings</h1><p class="header-sub">Phantom Fleet Manager configuration</p></div>
+        </header>
+        <div class="settings-grid">
+          <div class="settings-card">
+            <h3>Security</h3>
+            <p class="text-muted">Token encryption and access control</p>
+            <div class="settings-action">
+              <span class="setting-label">Encryption Key</span>
+              <span class="setting-value">AES-256</span>
+            </div>
+          </div>
+          <div class="settings-card">
+            <h3>Fleet Management</h3>
+            <p class="text-muted">Import, export, and switch fleets</p>
+            <div class="settings-actions">
+              <button class="btn btn-primary" onclick="exportFleet()">Export Current Fleet</button>
+              <button class="btn btn-ghost" onclick="importFleet()">Import Fleet</button>
+            </div>
+          </div>
+          <div class="settings-card">
+            <h3>Updates</h3>
+            <p class="text-muted">Check for Phantom Fleet Manager updates</p>
+            <div class="settings-actions">
+              <button class="btn btn-primary" onclick="checkForUpdates()">Check for Updates</button>
+            </div>
+          </div>
+        </div>
+        <div class="phantom-footer">
+          <div class="phantom-brand-large">
+            <span class="phantom-logo-large">👻</span>
+            <div>
+              <div class="phantom-name">Phantom Fleet Manager</div>
+              <div class="phantom-version">Version 2.0.0 — Made by Phantom</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay hidden" id="add-bot-modal">
+    <div class="modal">
+      <div class="modal-header"><h3>Add New Bot</h3><button class="modal-close" onclick="hideAddBotModal()">&times;</button></div>
+      <div class="modal-body">
+        <div class="form-group"><label>Bot Name</label><input type="text" id="new-bot-name" placeholder="My Awesome Bot"></div>
+        <div class="form-group"><label>Bot Token</label><input type="password" id="new-bot-token" placeholder="MTAx..."><span class="form-hint">Your bot token is encrypted with AES-256</span></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="hideAddBotModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="addBot()">Add Bot</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

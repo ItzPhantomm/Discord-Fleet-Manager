@@ -1,0 +1,200 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-sans: 'DM Sans', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * {
+    @apply border-phantom-border;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-phantom-bg text-phantom-text font-sans antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Font smoothing */
+  @media (prefers-color-scheme: dark) {
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  }
+
+  /* Focus visible for keyboard navigation */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-phantom-primary ring-offset-2 ring-offset-phantom-bg;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-phantom-borderHover rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-phantom-textDim;
+  }
+  ::-webkit-scrollbar-corner {
+    @apply bg-transparent;
+  }
+}
+
+@layer components {
+  /* Glass morphism card */
+  .glass-card {
+    @apply bg-phantom-surface/80 backdrop-blur-md border border-phantom-border;
+  }
+
+  /* Elevation shadows */
+  .elevation-1 {
+    @apply shadow-elevation-1;
+  }
+  .elevation-2 {
+    @apply shadow-elevation-2;
+  }
+  .elevation-3 {
+    @apply shadow-elevation-3;
+  }
+  .elevation-4 {
+    @apply shadow-elevation-4;
+  }
+
+  /* Interactive elements */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-sm
+           transition-all duration-150 ease-spring
+           focus-visible:ring-2 focus-visible:ring-phantom-primary focus-visible:ring-offset-2 focus-visible:ring-offset-phantom-bg
+           disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-phantom-primary text-phantom-bg hover:bg-phantom-primaryHover active:scale-[0.96];
+  }
+  .btn-secondary {
+    @apply btn bg-phantom-surfaceHover text-phantom-text border border-phantom-border hover:bg-phantom-border hover:border-phantom-borderHover active:scale-[0.96];
+  }
+  .btn-danger {
+    @apply btn bg-phantom-danger text-white hover:bg-phantom-danger/90 active:scale-[0.96];
+  }
+  .btn-ghost {
+    @apply btn bg-transparent text-phantom-textMuted hover:bg-phantom-surfaceHover hover:text-phantom-text active:scale-[0.96];
+  }
+
+  .input {
+    @apply w-full px-3 py-2 rounded-lg bg-phantom-surface border border-phantom-border
+           text-phantom-text placeholder-phantom-textDim
+           focus:border-phantom-primary focus:ring-1 focus:ring-phantom-primary
+           transition-colors duration-150
+           disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  .select {
+    @apply input appearance-none pr-10;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
+  }
+  .badge-success {
+    @apply badge bg-phantom-success/20 text-phantom-success;
+  }
+  .badge-warning {
+    @apply badge bg-phantom-warning/20 text-phantom-warning;
+  }
+  .badge-danger {
+    @apply badge bg-phantom-danger/20 text-phantom-danger;
+  }
+  .badge-info {
+    @apply badge bg-phantom-info/20 text-phantom-info;
+  }
+  .badge-neutral {
+    @apply badge bg-phantom-border text-phantom-textMuted;
+  }
+
+  /* Card component */
+  .card {
+    @apply glass-card rounded-xl p-6 elevation-1 transition-all duration-200
+           hover:elevation-2 hover:border-phantom-borderHover;
+  }
+
+  /* Tabular numbers for metrics */
+  .tabular-nums {
+    @apply font-mono font-variant-numeric-[tabular-nums];
+  }
+
+  /* Text wrapping */
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  /* Image outline */
+  .img-outline {
+    @apply relative;
+  }
+  .img-outline::before {
+    content: '';
+    @apply absolute inset-0 pointer-events-none;
+    border: 1px solid oklch(0 0 0 / 0.1);
+  }
+  .dark .img-outline::before {
+    border-color: oklch(1 0 0 / 0.1);
+  }
+
+  /* Animation utilities */
+  .animate-stagger-1 { animation-delay: 50ms; }
+  .animate-stagger-2 { animation-delay: 100ms; }
+  .animate-stagger-3 { animation-delay: 150ms; }
+  .animate-stagger-4 { animation-delay: 200ms; }
+  .animate-stagger-5 { animation-delay: 250ms; }
+  .animate-stagger-6 { animation-delay: 300ms; }
+  .animate-stagger-7 { animation-delay: 350ms; }
+  .animate-stagger-8 { animation-delay: 400ms; }
+
+  /* Command palette */
+  .cmdk-overlay {
+    @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-50;
+  }
+  .cmdk-dialog {
+    @apply fixed top-1/4 left-1/2 -translate-x-1/2 w-full max-w-2xl glass-card rounded-xl p-0 overflow-hidden elevation-4;
+  }
+}
+
+@layer utilities {
+  /* Concentric border radius helper */
+  .radius-concentric {
+    /* Outer radius = inner radius + padding */
+  }
+  .radius-concentric > *:first-child {
+    @apply rounded-xl;
+  }
+  .radius-concentric > *:first-child > * {
+    @apply rounded-lg;
+  }
+}

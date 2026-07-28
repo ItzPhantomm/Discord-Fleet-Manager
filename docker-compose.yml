@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  fleet-manager:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: phantom-fleet-manager
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./.env:/app/.env:ro
+    environment:
+      - NODE_ENV=production
+      - DATABASE_PATH=/app/data/fleet.db
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Optional: Redis for clustering (future)
+  # redis:
+  #   image: redis:7-alpine
+  #   volumes:
+  #     - redis-data:/data
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     interval: 10s
+
+# volumes:
+#   redis-data:
